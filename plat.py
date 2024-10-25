@@ -16,8 +16,6 @@ sling = pygame.transform.scale(sling,[100,100])
 rock = pygame.image.load("rock.png")
 rock = pygame.transform.scale(rock,[50,50])
 
-player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 1.3)
-
 class Rock(pygame.sprite.Sprite) :
     def __init__(self,x,y) :
         super().__init__()
@@ -28,6 +26,7 @@ class Rock(pygame.sprite.Sprite) :
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        
 
     def move(self) :
         self.rect.y -= 10
@@ -40,20 +39,19 @@ class Player :
     def __init__(self,stones,lives,limit=1) :
         self.stones = stones
         self.lives = lives
-        self.x = 640
-        self.y = 650
         self.rocks = []
         self.rock_limit = limit
         self.loaded = 15
+        self.player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 1.3)
 
     def move(self,direction) :
         if direction == "right":
-            self.x +=10
+            self.player_pos.x +=10
         elif direction == "left":
-            self.x -=10
+            self.player_pos.x -=10
 
     def throw(self) :
-        new_rock = Rock(self.x - 25, self.y - 20)
+        new_rock = Rock(self.player_pos.x, self.player_pos.y)
         self.rocks.append(new_rock)
         self.loaded -= 1
 
@@ -73,7 +71,7 @@ class Player :
             if rock.rect.colliderect(bird_left.get_rect(topleft=[590,30])) :
                 print("hit")
                 player.rocks.remove(rock)
-                self.hit == True
+            
         
 class Bird(pygame.sprite.Sprite) :
     def __init__(self,x,y) :
@@ -117,12 +115,12 @@ while running:
     if player.loaded > 2:
         sling = pygame.image.load("loaded_sling.png")
         sling = pygame.transform.scale(sling,[80,80])
-        screen.blit(sling,[player_pos.x-40,player_pos.y-40])
+        screen.blit(sling,[player.player_pos.x-40,player.player_pos.y-40])
 
     else :
         sling = pygame.image.load("sling.png")
         sling = pygame.transform.scale(sling,[80,80])
-        screen.blit(sling,[player_pos.x-40,player_pos.y-40])
+        screen.blit(sling,[player.player_pos.x-40,player.player_pos.y-40])
 
     # Top rope
     pygame.draw.rect(screen,"black",[0,108,1280,2])
@@ -134,11 +132,11 @@ while running:
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_a]:
-        if player_pos.x > 40:
-            player_pos.x -= 10
+        if player.player_pos.x > 40:
+            player.player_pos.x -= 10
     if keys[pygame.K_d]:
-        if player_pos.x < 1240:
-            player_pos.x += 10
+        if player.player_pos.x < 1240:
+            player.player_pos.x += 10
 
 
     screen.blit(bird_left,[590,30])
